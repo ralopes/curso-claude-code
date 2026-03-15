@@ -1,0 +1,6 @@
+node_modules/
+_temp_curso.md
+*.ps1
+*.js
+package*.json
+EMAILJS-SETUP.md

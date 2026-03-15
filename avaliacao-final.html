@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Avaliação Final — Curso Claude Code Corporativo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --roxo: #5B4CF5;
+  --roxo-luz: #EEF0FF;
+  --verde: #27AE60;
+  --verde-bg: #EDFAF1;
+  --vermelho: #E74C3C;
+  --vermelho-bg: #FEF2F2;
+  --amarelo: #F39C12;
+  --amarelo-bg: #FFF8E7;
+  --texto: #1A1A2E;
+  --texto-suave: #5A5A7A;
+  --borda: #E2E4F0;
+  --raio: 10px;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: #F4F4FB;
+  color: var(--texto);
+  font-size: 15px;
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+#setup-banner {
+  background: var(--amarelo-bg);
+  border-bottom: 2px solid var(--amarelo);
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.88rem;
+}
+#setup-banner strong { color: #7D5A00; }
+
+.header {
+  background: linear-gradient(135deg, #0F0F24 0%, #1A1A3E 100%);
+  color: #fff;
+  padding: 40px 24px 32px;
+  text-align: center;
+}
+.header-logo { font-size: 2.8rem; margin-bottom: 12px; }
+.header h1 { font-size: 1.6rem; font-weight: 700; margin-bottom: 6px; }
+.header p { color: #9090C0; font-size: 0.9rem; }
+.header-chips {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+.chip {
+  background: rgba(91,76,245,0.3);
+  border: 1px solid rgba(91,76,245,0.5);
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 0.78rem;
+  color: #C0C0FF;
+}
+.chip.pass { background: rgba(39,174,96,0.25); border-color: rgba(39,174,96,0.5); color: #90EEB0; }
+
+.container {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  padding: 28px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(91,76,245,0.05);
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+@media (max-width: 520px) { .info-grid { grid-template-columns: 1fr; } }
+
+.field label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--texto-suave);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+.field input {
+  width: 100%;
+  border: 2px solid var(--borda);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  color: var(--texto);
+  transition: border-color 0.15s;
+  outline: none;
+}
+.field input:focus { border-color: var(--roxo); }
+
+.question-card {
+  background: #fff;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  padding: 22px 24px;
+  margin-bottom: 12px;
+  transition: border-color 0.2s;
+}
+.question-card.answered { border-color: var(--roxo); }
+.question-card.correct  { border-color: var(--verde); background: var(--verde-bg); }
+.question-card.wrong    { border-color: var(--vermelho); background: var(--vermelho-bg); }
+
+.question-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+.question-num {
+  background: var(--roxo-luz);
+  color: var(--roxo);
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.question-card.correct .question-num { background: var(--verde-bg); color: var(--verde); }
+.question-card.wrong   .question-num { background: var(--vermelho-bg); color: var(--vermelho); }
+
+.question-text { font-weight: 500; font-size: 0.97rem; flex: 1; line-height: 1.5; }
+
+.module-tag {
+  font-size: 0.68rem;
+  background: var(--roxo-luz);
+  color: var(--roxo);
+  border-radius: 10px;
+  padding: 2px 8px;
+  font-weight: 600;
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+.options { display: flex; flex-direction: column; gap: 8px; }
+
+.option {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 14px;
+  border: 2px solid var(--borda);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+.option:hover { border-color: var(--roxo); background: var(--roxo-luz); }
+.option input[type="radio"] { margin-top: 2px; flex-shrink: 0; accent-color: var(--roxo); }
+.option.selected { border-color: var(--roxo); background: var(--roxo-luz); }
+.option.correct-answer { border-color: var(--verde) !important; background: var(--verde-bg) !important; }
+.option.wrong-answer   { border-color: var(--vermelho) !important; background: var(--vermelho-bg) !important; }
+
+.progress-wrap { margin-bottom: 24px; }
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  color: var(--texto-suave);
+  margin-bottom: 6px;
+}
+.progress-track {
+  background: var(--borda);
+  border-radius: 4px;
+  height: 6px;
+  overflow: hidden;
+}
+.progress-fill {
+  background: linear-gradient(90deg, var(--roxo), #00C2A8);
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s;
+  width: 0%;
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 16px;
+  background: var(--roxo);
+  color: #fff;
+  border: none;
+  border-radius: var(--raio);
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-top: 8px;
+  letter-spacing: 0.01em;
+}
+.btn-submit:hover { background: #4A3BE0; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(91,76,245,0.35); }
+.btn-submit:active { transform: translateY(0); }
+.btn-submit:disabled { background: #9090B0; cursor: not-allowed; transform: none; box-shadow: none; }
+
+#results { display: none; }
+
+.result-hero {
+  text-align: center;
+  padding: 40px 24px;
+  border-radius: var(--raio);
+  margin-bottom: 24px;
+}
+.result-hero.aprovado { background: linear-gradient(135deg, #0F4C2A 0%, #1A6B3E 100%); color: #fff; }
+.result-hero.reprovado { background: linear-gradient(135deg, #4A0F0F 0%, #6B1A1A 100%); color: #fff; }
+
+.result-icon { font-size: 4rem; margin-bottom: 16px; }
+.result-status { font-size: 1.8rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 8px; }
+.result-score { font-size: 3.5rem; font-weight: 800; letter-spacing: -0.03em; margin: 12px 0; }
+.result-pct { font-size: 1rem; opacity: 0.8; }
+.result-msg { font-size: 0.9rem; opacity: 0.9; margin-top: 12px; max-width: 440px; margin-left: auto; margin-right: auto; }
+
+.result-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.stat-box {
+  background: #fff;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  padding: 18px;
+  text-align: center;
+}
+.stat-value { font-size: 1.8rem; font-weight: 700; color: var(--roxo); }
+.stat-label { font-size: 0.75rem; color: var(--texto-suave); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 4px; }
+
+.email-status {
+  background: var(--roxo-luz);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  padding: 16px 20px;
+  font-size: 0.88rem;
+  color: var(--texto-suave);
+  margin-bottom: 24px;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--roxo);
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 500;
+  margin-bottom: 24px;
+}
+.back-link:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<!-- ================================================================
+     CONFIGURAÇÃO DO E-MAIL (preencha uma vez)
+     Siga o guia em EMAILJS-SETUP.md para obter estes valores
+     ================================================================ -->
+<script>
+var EMAILJS_PUBLIC_KEY  = 'SEU_PUBLIC_KEY_AQUI';
+var EMAILJS_SERVICE_ID  = 'SEU_SERVICE_ID_AQUI';
+var EMAILJS_TEMPLATE_ID = 'SEU_TEMPLATE_ID_AQUI';
+var ADMIN_EMAIL         = 'raul.lopes@infobip.com';
+var EMAIL_CONFIGURED    = (EMAILJS_PUBLIC_KEY !== 'SEU_PUBLIC_KEY_AQUI');
+</script>
+<!-- ================================================================ -->
+
+<div id="setup-banner">
+  <span>⚠️</span>
+  <span><strong>Configuração de e-mail pendente:</strong> Siga o arquivo <strong>EMAILJS-SETUP.md</strong> para ativar o envio automático de resultados. A avaliação funciona normalmente sem isso.</span>
+</div>
+
+<div class="header">
+  <div class="header-logo">🤖</div>
+  <h1>Avaliação Final</h1>
+  <p>Curso Claude Code Corporativo &mdash; Dr. Marcus Reid</p>
+  <div class="header-chips">
+    <span class="chip">20 questões</span>
+    <span class="chip">Múltipla escolha</span>
+    <span class="chip pass">Aprovação: 80% — 16 de 20 corretas</span>
+  </div>
+</div>
+
+<div class="container">
+  <a href="index.html" class="back-link">&#8592; Voltar ao curso</a>
+
+  <div id="test-form-wrap">
+
+    <div class="card">
+      <h2 style="font-size:1rem;margin-bottom:16px;color:var(--texto-suave);text-transform:uppercase;letter-spacing:0.05em;">Seus dados</h2>
+      <div class="info-grid">
+        <div class="field">
+          <label>Nome completo</label>
+          <input type="text" id="student-name" placeholder="Seu nome completo" required>
+        </div>
+        <div class="field">
+          <label>E-mail</label>
+          <input type="email" id="student-email" placeholder="seu@email.com" required>
+        </div>
+      </div>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span>Progresso</span>
+        <span id="progress-text">0 de 20 respondidas</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+    </div>
+
+    <div id="questions-wrap"></div>
+
+    <button class="btn-submit" id="btn-submit" onclick="submitTest()">
+      Enviar Avaliação
+    </button>
+
+  </div>
+
+  <div id="results">
+    <a href="index.html" class="back-link">&#8592; Voltar ao curso</a>
+    <div id="result-hero-wrap"></div>
+    <div class="result-stats" id="result-stats"></div>
+    <div class="email-status" id="email-status"></div>
+    <div id="questions-review"></div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+<script>
+// ================================================================
+// QUESTÕES — 20 questões revisadas e corrigidas
+// ================================================================
+var QUESTIONS = [
+  // ── Módulo 1 ──────────────────────────────────────────────────
+  {
+    id: 1, module: 'M1',
+    text: 'Após instalar a extensão Claude Code no VS Code, qual é o passo obrigatório para começar a utilizá-la?',
+    options: [
+      'Criar um arquivo CLAUDE.md na raiz do projeto',
+      'Instalar o Node.js no computador',
+      'Autenticar-se com a conta Claude ou Anthropic',
+      'Configurar manualmente o arquivo settings.json do VS Code'
+    ],
+    correct: 2
+  },
+  {
+    id: 2, module: 'M1',
+    text: 'O que acontece ao histórico de uma conversa quando você fecha e abre uma nova sessão no Claude Code?',
+    options: [
+      'É salvo automaticamente em um arquivo .claude-history',
+      'Fica disponível por 24 horas na nuvem da Anthropic',
+      'É perdido — cada nova sessão começa sem memória da anterior',
+      'É exportado automaticamente para um arquivo Markdown'
+    ],
+    correct: 2
+  },
+  // ── Módulo 2 ──────────────────────────────────────────────────
+  {
+    id: 3, module: 'M2',
+    text: 'Quais são os 5 elementos de um prompt bem estruturado segundo o Módulo 2?',
+    options: [
+      'Objetivo, Método, Dados, Saída, Validação',
+      'Papel, Tarefa, Contexto, Formato, Restrições',
+      'Título, Corpo, Exemplos, Resultado, Revisão',
+      'Persona, Ação, Limite, Forma, Verificação'
+    ],
+    correct: 1
+  },
+  {
+    id: 4, module: 'M2',
+    text: 'Por que o prompt "melhore este código" é considerado ineficiente?',
+    options: [
+      'É muito curto para ser processado corretamente pelo agente',
+      'Não especifica a linguagem de programação utilizada',
+      'Não define o critério de melhoria nem fornece contexto suficiente',
+      'Deveria terminar com ponto de interrogação'
+    ],
+    correct: 2
+  },
+  {
+    id: 5, module: 'M2',
+    text: 'O que significa "iterar" sobre um prompt no Claude Code?',
+    options: [
+      'Repetir o mesmo prompt várias vezes até obter resultado idêntico',
+      'Refinar a solicitação com base nas respostas anteriores, adicionando contexto ou correções',
+      'Salvar versões diferentes do prompt em um arquivo separado',
+      'Dividir um prompt longo em prompts menores independentes entre si'
+    ],
+    correct: 1
+  },
+  // ── Módulo 3 ──────────────────────────────────────────────────
+  {
+    id: 6, module: 'M3',
+    text: 'No Claude Code, como se chama a pasta raiz aberta no VS Code que o agente pode acessar durante a sessão?',
+    options: [
+      'Repositório',
+      'Projeto',
+      'Workspace',
+      'Diretório de trabalho'
+    ],
+    correct: 2
+  },
+  {
+    id: 7, module: 'M3',
+    text: 'Qual é a forma mais rápida de referenciar um arquivo específico diretamente no prompt do Claude Code?',
+    options: [
+      'Digitar o caminho completo do arquivo manualmente',
+      'Usar o símbolo @ seguido do nome do arquivo',
+      'Arrastar o arquivo para a janela de chat',
+      'Copiar e colar o conteúdo do arquivo no prompt'
+    ],
+    correct: 1
+  },
+  // ── Módulo 4 ──────────────────────────────────────────────────
+  {
+    id: 8, module: 'M4',
+    text: 'Qual é a primeira etapa do framework de debugging em 4 passos ensinado no Módulo 4?',
+    options: [
+      'Corrigir o trecho de código suspeito diretamente',
+      'Descrever o sintoma com precisão — o que ocorre versus o que deveria ocorrer',
+      'Reescrever o módulo inteiro do zero',
+      'Pesquisar a mensagem de erro no Stack Overflow'
+    ],
+    correct: 1
+  },
+  {
+    id: 9, module: 'M4',
+    text: 'Quais são os 4 tipos de teste que o Claude Code pode gerar para um código?',
+    options: [
+      'Testes de velocidade, memória, segurança e compatibilidade',
+      'Testes unitários, de integração, de casos extremos e de regressão',
+      'Testes manuais, automatizados, visuais e de carga',
+      'Testes de entrada, processamento, saída e exceção'
+    ],
+    correct: 1
+  },
+  {
+    id: 10, module: 'M4',
+    text: 'Qual é a abordagem recomendada para refatorar código com o Claude Code?',
+    options: [
+      'Reescrever todo o módulo de uma só vez para evitar inconsistências',
+      'Analisar o código, priorizar melhorias e refatorar incrementalmente, validando cada etapa',
+      'Traduzir o código para uma linguagem mais moderna',
+      'Aplicar apenas correções de formatação e nomenclatura'
+    ],
+    correct: 1
+  },
+  // ── Módulo 5 ──────────────────────────────────────────────────
+  {
+    id: 11, module: 'M5',
+    text: 'O que é o arquivo CLAUDE.md?',
+    options: [
+      'Um arquivo de documentação técnica gerado automaticamente pelo VS Code',
+      'Um arquivo de configuração de ambiente similar ao .env',
+      'Um arquivo carregado automaticamente pelo Claude Code que fornece contexto persistente a cada sessão',
+      'Um arquivo de log que registra o histórico das conversas'
+    ],
+    correct: 2
+  },
+  {
+    id: 12, module: 'M5',
+    text: 'Qual é a principal vantagem de manter um CLAUDE.md bem estruturado no projeto?',
+    options: [
+      'Aumenta a velocidade de processamento do modelo de linguagem',
+      'Elimina a necessidade de repetir convenções e contexto do projeto a cada nova conversa',
+      'Permite usar o Claude Code sem conexão com a internet',
+      'Reduz o custo de uso da API da Anthropic'
+    ],
+    correct: 1
+  },
+  // ── Módulo 6 ──────────────────────────────────────────────────
+  {
+    id: 13, module: 'M6',
+    text: 'O que torna um agente especializado mais eficaz do que um agente genérico?',
+    options: [
+      'O agente especializado tem acesso a mais ferramentas e APIs externas',
+      'O agente especializado possui identidade, escopo e restrições definidos que calibram suas respostas',
+      'O agente genérico comete mais erros de raciocínio lógico',
+      'Não há diferença prática entre agentes especializados e genéricos'
+    ],
+    correct: 1
+  },
+  {
+    id: 14, module: 'M6',
+    text: 'No contexto de agentes especializados, o que define o "escopo" do agente?',
+    options: [
+      'O número máximo de tokens que o agente pode usar por sessão',
+      'O tempo máximo de resposta esperado',
+      'Os limites do que o agente deve e não deve fazer',
+      'O modelo de linguagem que será utilizado'
+    ],
+    correct: 2
+  },
+  {
+    id: 15, module: 'M6',
+    text: 'Quais são os componentes que formam a persona de um agente especializado conforme o Módulo 6?',
+    options: [
+      'Nome, versão, idioma e formato de saída',
+      'Identidade profissional, missão, critérios de qualidade e tom de comunicação',
+      'Apenas o papel e as restrições',
+      'Prompt inicial, temperatura, limite de tokens e idioma'
+    ],
+    correct: 1
+  },
+  // ── Módulo 7 ──────────────────────────────────────────────────
+  {
+    id: 16, module: 'M7',
+    text: 'Em qual situação o padrão de orquestração paralela é mais adequado que o sequencial?',
+    options: [
+      'Quando há muitos arquivos para processar em sequência lógica',
+      'Quando cada tarefa depende do resultado da anterior para ser iniciada',
+      'Quando as tarefas são independentes entre si e podem ser executadas ao mesmo tempo',
+      'Quando o projeto tem prazo muito apertado e não há tempo para planejamento'
+    ],
+    correct: 2
+  },
+  {
+    id: 17, module: 'M7',
+    text: 'Qual é o propósito do "handoff document" em um pipeline de múltiplos agentes?',
+    options: [
+      'Documentar formalmente o projeto para entrega ao cliente',
+      'Acumular e transferir o estado, contexto e decisões de cada agente para o próximo no pipeline',
+      'Registrar os erros e exceções ocorridos durante a execução',
+      'Gerar automaticamente o relatório final do sprint'
+    ],
+    correct: 1
+  },
+  {
+    id: 18, module: 'M7',
+    text: 'Por que é obrigatório passar o output COMPLETO (e não um resumo) de um agente para o próximo?',
+    options: [
+      'Para respeitar o limite mínimo de tokens exigido por requisição',
+      'Para manter o histórico da conversa visível ao usuário final',
+      'Para não perder informações críticas que o próximo agente precisará para executar sua tarefa',
+      'Para facilitar a revisão humana de todo o pipeline'
+    ],
+    correct: 2
+  },
+  // ── Módulo 8 ──────────────────────────────────────────────────
+  {
+    id: 19, module: 'M8',
+    text: 'O que significa a sigla MCP no contexto do Claude Code?',
+    options: [
+      'Multi-Channel Processing',
+      'Managed Code Platform',
+      'Model Context Protocol',
+      'Multi-Claude Pipeline'
+    ],
+    correct: 2
+  },
+  {
+    id: 20, module: 'M8',
+    text: 'Qual é a principal diferença entre usar o Claude Code com e sem o MCP Filesystem ativo?',
+    options: [
+      'Com MCP, o agente processa respostas mais rapidamente',
+      'Sem MCP, o agente não consegue entender código-fonte',
+      'Com MCP, o agente lê e escreve arquivos diretamente; sem MCP, só trabalha com texto copiado no chat',
+      'Com MCP, o agente tem acesso irrestrito à internet'
+    ],
+    correct: 2
+  }
+];
+
+// ================================================================
+// RENDERIZAR QUESTÕES
+// ================================================================
+var userAnswers = {};
+
+function renderQuestions() {
+  var wrap = document.getElementById('questions-wrap');
+  var html = '';
+  QUESTIONS.forEach(function(q) {
+    html += '<div class="question-card" id="qcard-' + q.id + '">';
+    html += '<div class="question-header">';
+    html += '<div class="question-num">' + q.id + '</div>';
+    html += '<div class="question-text">' + q.text + '</div>';
+    html += '<div class="module-tag">' + q.module + '</div>';
+    html += '</div>';
+    html += '<div class="options">';
+    var letters = ['A', 'B', 'C', 'D'];
+    q.options.forEach(function(opt, idx) {
+      html += '<label class="option" id="opt-' + q.id + '-' + idx + '">';
+      html += '<input type="radio" name="q' + q.id + '" value="' + idx + '" onchange="selectAnswer(' + q.id + ',' + idx + ')">';
+      html += '<strong style="flex-shrink:0;color:var(--texto-suave)">' + letters[idx] + '.</strong>&nbsp;' + opt;
+      html += '</label>';
+    });
+    html += '</div></div>';
+  });
+  wrap.innerHTML = html;
+}
+
+function selectAnswer(qId, optIdx) {
+  userAnswers[qId] = optIdx;
+  document.getElementById('qcard-' + qId).classList.add('answered');
+  var answered = Object.keys(userAnswers).length;
+  document.getElementById('progress-text').textContent = answered + ' de 20 respondidas';
+  document.getElementById('progress-fill').style.width = (answered / 20 * 100) + '%';
+}
+
+// ================================================================
+// ENVIAR
+// ================================================================
+function submitTest() {
+  var name  = document.getElementById('student-name').value.trim();
+  var email = document.getElementById('student-email').value.trim();
+
+  if (!name)  { alert('Por favor, informe seu nome completo.'); return; }
+  if (!email || !email.includes('@')) { alert('Por favor, informe um e-mail válido.'); return; }
+
+  var answered = Object.keys(userAnswers).length;
+  if (answered < 20) {
+    if (!confirm('Você ainda tem ' + (20 - answered) + ' questão(ões) sem resposta. Deseja enviar assim mesmo?')) return;
+  }
+
+  var correct = 0;
+  var wrongList = [];
+  QUESTIONS.forEach(function(q) {
+    var given = userAnswers[q.id];
+    if (given === undefined) {
+      wrongList.push('Q' + q.id + '. ' + q.text + '\n   (Não respondida)\n   Correta: ' + ['A','B','C','D'][q.correct] + '. ' + q.options[q.correct]);
+    } else if (given === q.correct) {
+      correct++;
+    } else {
+      var L = ['A','B','C','D'];
+      wrongList.push('Q' + q.id + '. ' + q.text
+        + '\n   Sua resposta: ' + L[given] + '. ' + q.options[given]
+        + '\n   Correta: ' + L[q.correct] + '. ' + q.options[q.correct]);
+    }
+  });
+
+  var pct       = Math.round(correct / 20 * 100);
+  var approved  = pct >= 80;
+  var resultStr = approved ? 'APROVADO(A)' : 'REPROVADO(A)';
+  var scoreStr  = correct + '/20';
+  var pctStr    = pct + '%';
+  var wrongText = wrongList.length > 0 ? wrongList.join('\n\n') : 'Todas as questões respondidas corretamente!';
+  var now       = new Date().toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+
+  var btn = document.getElementById('btn-submit');
+  btn.disabled = true;
+  btn.textContent = 'Enviando...';
+
+  if (EMAIL_CONFIGURED) {
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+    var params = { student_name: name, student_email: email, score: scoreStr, percentage: pctStr, result: resultStr, wrong_answers: wrongText, date: now };
+    var p1 = emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, Object.assign({}, params, { to_email: ADMIN_EMAIL }));
+    var p2 = emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, Object.assign({}, params, { to_email: email }));
+    Promise.all([p1, p2])
+      .then(function()    { showResults(name, email, correct, pct, approved, wrongList, now, true); })
+      .catch(function(e)  { console.error(e); showResults(name, email, correct, pct, approved, wrongList, now, false); });
+  } else {
+    showResults(name, email, correct, pct, approved, wrongList, now, false);
+  }
+}
+
+// ================================================================
+// EXIBIR RESULTADOS
+// ================================================================
+function showResults(name, email, correct, pct, approved, wrongList, now, emailSent) {
+  document.getElementById('test-form-wrap').style.display = 'none';
+  document.getElementById('results').style.display = 'block';
+  window.scrollTo(0, 0);
+
+  var heroClass = approved ? 'aprovado' : 'reprovado';
+  var heroIcon  = approved ? '🎉' : '😔';
+  var heroMsg   = approved
+    ? 'Parabéns, ' + name + '! Você demonstrou domínio do arsenal completo do Claude Code.'
+    : 'Não desanime, ' + name + '. Revise os módulos das questões incorretas e tente novamente.';
+
+  document.getElementById('result-hero-wrap').innerHTML =
+    '<div class="result-hero ' + heroClass + '">'
+    + '<div class="result-icon">' + heroIcon + '</div>'
+    + '<div class="result-status">' + (approved ? 'APROVADO(A)' : 'REPROVADO(A)') + '</div>'
+    + '<div class="result-score">' + correct + '<span style="font-size:1.8rem;opacity:0.7">/20</span></div>'
+    + '<div class="result-pct">' + pct + '% de aproveitamento &mdash; mínimo necessário: 80%</div>'
+    + '<div class="result-msg">' + heroMsg + '</div>'
+    + '</div>';
+
+  var wrong = 20 - correct;
+  document.getElementById('result-stats').innerHTML =
+    '<div class="stat-box"><div class="stat-value" style="color:var(--verde)">' + correct + '</div><div class="stat-label">Corretas</div></div>'
+    + '<div class="stat-box"><div class="stat-value" style="color:var(--vermelho)">' + wrong + '</div><div class="stat-label">Incorretas</div></div>'
+    + '<div class="stat-box"><div class="stat-value">' + pct + '%</div><div class="stat-label">Aproveitamento</div></div>';
+
+  var emailMsg = emailSent
+    ? '✉️ Resultados enviados para <strong>' + email + '</strong> e para o coordenador do curso.'
+    : !EMAIL_CONFIGURED
+      ? 'ℹ️ Envio de e-mail não configurado. Consulte o arquivo <strong>EMAILJS-SETUP.md</strong> para ativar.'
+      : '⚠️ Não foi possível enviar o e-mail. Por favor, capture um print desta tela.';
+  document.getElementById('email-status').innerHTML = emailMsg;
+
+  var reviewHtml = '<h3 style="font-size:1rem;color:var(--texto-suave);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:16px;">Revisão das Questões</h3>';
+  QUESTIONS.forEach(function(q) {
+    var given     = userAnswers[q.id];
+    var isCorrect = (given === q.correct);
+    var cardClass = (given === undefined) ? 'wrong' : (isCorrect ? 'correct' : 'wrong');
+    var L         = ['A','B','C','D'];
+
+    reviewHtml += '<div class="question-card ' + cardClass + '">';
+    reviewHtml += '<div class="question-header">';
+    reviewHtml += '<div class="question-num">' + q.id + '</div>';
+    reviewHtml += '<div class="question-text">' + q.text + '</div>';
+    reviewHtml += '<div class="module-tag">' + q.module + '</div>';
+    reviewHtml += '</div><div class="options">';
+
+    q.options.forEach(function(opt, idx) {
+      var cls = '';
+      if (idx === q.correct) cls = 'correct-answer';
+      else if (idx === given && !isCorrect) cls = 'wrong-answer';
+      var icon = idx === q.correct ? '✓' : (idx === given && !isCorrect ? '✗' : '○');
+      reviewHtml += '<div class="option ' + cls + '">'
+        + '<span style="font-weight:700;flex-shrink:0">' + icon + '</span>'
+        + ' <strong style="flex-shrink:0">' + L[idx] + '.</strong>&nbsp;' + opt
+        + '</div>';
+    });
+
+    reviewHtml += '</div></div>';
+  });
+  document.getElementById('questions-review').innerHTML = reviewHtml;
+}
+
+// ================================================================
+// INIT
+// ================================================================
+document.addEventListener('DOMContentLoaded', function() {
+  renderQuestions();
+  if (EMAIL_CONFIGURED) document.getElementById('setup-banner').style.display = 'none';
+});
+</script>
+
+</body>
+</html>
