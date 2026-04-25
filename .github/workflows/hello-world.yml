@@ -1,12 +1,19 @@
-name: Test
+name: Meu Primeiro Workflow
 
 on: [push]
 
 jobs:
-  test:
+  saudacao:
     runs-on: ubuntu-latest
     steps:
-      - name: Passo 1
-        run: echo hello
-      - name: Passo 2
+      - name: Passo 1 - Cumprimento
+        run: echo "Ola! Sou uma automacao do GitHub Actions!"
+
+      - name: Passo 2 - Hora
         run: date
+
+      - name: Passo 3 - Quem sou
+        run: 'echo "Meu nome e: $(whoami)"'
+
+      - name: Passo 4 - Mensagem do Raul
+        run: echo "Este workflow foi feito pelo Raul!"
