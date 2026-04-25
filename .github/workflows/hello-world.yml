@@ -1,9 +1,6 @@
 name: Meu Primeiro Workflow
 
-on:
-  push:
-    branches:
-      - main
+on: [push]
 
 jobs:
   saudacao:
