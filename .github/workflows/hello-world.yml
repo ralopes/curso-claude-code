@@ -1,0 +1,19 @@
+yamlname: Meu Primeiro Workflow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  saudacao:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Passo 1 - Cumprimento
+        run: echo "Olá! Sou uma automação do GitHub Actions! 👋"
+      
+      - name: Passo 2 - Hora
+        run: date
+      
+      - name: Passo 3 - Quem sou
+        run: echo "Meu nome é: $(whoami)"
