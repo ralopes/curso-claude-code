@@ -1,4 +1,4 @@
-yamlname: Meu Primeiro Workflow
+name: Meu Primeiro Workflow
 
 on:
   push:
